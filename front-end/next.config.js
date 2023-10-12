@@ -11,7 +11,7 @@ const nextConfig = {
 };
 const configApi = {
   api: {
-    responseLimit: "10mb",
+    responseLimit: "50mb",
   },
 };
 
