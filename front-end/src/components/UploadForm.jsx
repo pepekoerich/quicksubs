@@ -5,6 +5,7 @@ import UploadIcon from "./UploadIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "./Spinner";
+import toast from "react-hot-toast";
 
 export default function UploadForm() {
   const [isUploading, setIsUploading] = useState(false);
@@ -18,10 +19,13 @@ export default function UploadForm() {
         const file = files[0];
         setIsUploading(true);
         const res = await axios.postForm("/api/upload", { file });
+        console.log(res)
         setIsUploading(false);
-        router.push(`/video/${res.data.newName}`);
+        router.push(`/${res.data.newName}`);
       } catch (error) {
         console.log(error);
+        setIsUploading(false);
+        toast.error("Erro ao fazer upload do arquivo");
       }
     }
   }
