@@ -10,4 +10,10 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig
+export const configApi = {
+  api: {
+    responseLimit: "10mb",
+  },
+};
+
+module.exports = nextConfig, configApi

@@ -1,11 +1,5 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-export const config = {
-  api: {
-    responseLimit: "10mb",
-  },
-};
-
 export async function POST(req) {
   const formData = await req.formData();
   const file = formData.get("file");
