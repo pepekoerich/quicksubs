@@ -14,10 +14,8 @@ export async function POST(req) {
     },
   });
 
-
   const ext = name.split(".").slice(-1);
   const newName = `${Date.now()}.${ext}`;
-  console.log(newName)
 
   const uploadCommand = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
