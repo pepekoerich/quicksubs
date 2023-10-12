@@ -1,5 +1,8 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
+export const maxDuration = 50; // This function can run for a maximum of 5 seconds
+export const dynamic = "force-dynamic";
+
 export async function POST(req) {
   const formData = await req.formData();
   const file = formData.get("file");
