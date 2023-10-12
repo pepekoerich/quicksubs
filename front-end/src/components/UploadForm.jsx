@@ -11,19 +11,48 @@ export default function UploadForm() {
   const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
 
+  // async function uploadFile(event) {
+  //   event.preventDefault();
+  //   const files = event.target.files;
+  //   if (files.length > 0) {
+  //     try {
+  //       const file = files[0];
+  //       setIsUploading(true);
+  //       const res = await axios.postForm("/api/upload", { file });
+  //       console.log(res)
+  //       setIsUploading(false);
+  //       router.push(`/${res.data.newName}`);
+  //     } catch (error) {
+  //       console.log(error);
+  //       setIsUploading(false);
+  //       toast.error("Erro ao fazer upload do arquivo");
+  //     }
+  //   }
+  // }
+
   async function uploadFile(event) {
     event.preventDefault();
     const files = event.target.files;
     if (files.length > 0) {
+      const file = files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+  
       try {
-        const file = files[0];
         setIsUploading(true);
-        const res = await axios.postForm("/api/upload", { file });
-        console.log(res)
+        const response = await axios.post("/api/upload", formData);
+        console.log(response);
         setIsUploading(false);
-        router.push(`/${res.data.newName}`);
+  
+        if (response.status === 200) {
+          const { newName } = response.data;
+          router.push(`/${newName}`);
+        } else {
+          console.error("Unexpected response status:", response.status);
+          toast.error("Erro ao fazer upload do arquivo");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error during file upload:", error);
         setIsUploading(false);
         toast.error("Erro ao fazer upload do arquivo");
       }

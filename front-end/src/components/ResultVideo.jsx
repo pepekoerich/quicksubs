@@ -123,7 +123,7 @@ export default function ResultVideo({ filename, transcription }) {
         <div className="rounded overflow-hidden flex justify-center relative">
           {progress && progress < 1 && (
             <div className="bg-slate-800/80 rounded absolute inset-0 flex items-center justify-center">
-              <div className="bg-[#504099]/90 text-lg text-white text-center rounded-full w-20 h-20 items-center flex justify-center">
+              <div className="bg-[#504099]/90 text-lg text-white text-center rounded-full w-20 h-20 border border-white items-center flex justify-center">
                 {parseInt(progress * 100)}%
               </div>
             </div>
