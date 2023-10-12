@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Hero from "../components/Hero";
-import Icons from "../components/Icons";
-import InputCustom from "../components/InputCustom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Spinner } from "@material-tailwind/react";
+import Hero from "@/components/Hero";
+import Icons from "@/components/Icons";
+import Spinner from "@/components/Spinner";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,15 +13,15 @@ export default function ContactPage() {
     email: "",
     message: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sendForm = async (e) => {
+  async function sendForm(e) {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       toast.error("Preencha todos os campos");
     } else {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const res = await axios.postForm("/api/contact", formData);
         toast.success(res.data.message);
         setFormData({ name: "", email: "", message: "" });
@@ -30,20 +29,15 @@ export default function ContactPage() {
         toast.error("Erro ao enviar mensagem");
       }
     }
-    setLoading(false);
-  };
+    setIsLoading(false);
+  }
 
   return (
     <div>
-      {loading && (
-        <>
-          <div className=" fixed bg-slate-800/80 inset-0 items-center flex justify-center">
-            <div className=" rounded-full shadow p-4 flex flex-col items-center gap-4">
-              <Spinner className="h-20 w-20 text-[#FE7BE5]/60 rounded-full outline-offset-1 outline outline-[#ff00eeab] " />
-              <span className="">Carregando...</span>
-            </div>
-          </div>
-        </>
+      {isLoading && (
+        <div>
+          <Spinner text="Enviando..." />
+        </div>
       )}
       <Hero
         heroCta={"Ficou com alguma dúvida?"}
@@ -54,22 +48,21 @@ export default function ContactPage() {
 
       <Icons />
       <form onSubmit={sendForm}>
-        <InputCustom
+        <label htmlFor="">Nome</label>
+        <input
           type="text"
-          labelName="Nome"
-          name="name"
           value={formData.name}
-          placeholder="John Doe"
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="shadow-lg"
+          className="mt-2 mb-6 shadow-lg bg-[#FE7BE5]/30 border border-[#FE7BE5]  text-white text-sm rounded-lg block w-full p-2.5 placeholder:text-white/80"
+          placeholder="John Doe"
         />
-        <InputCustom
+        <label htmlFor="">Email</label>
+        <input
           type="email"
-          labelName="E-Mail"
-          name="email"
           value={formData.email}
-          placeholder="johndoe@email.com"
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="mt-2 mb-6 shadow-lg bg-[#FE7BE5]/30 border border-[#FE7BE5]  text-white text-sm rounded-lg block w-full p-2.5 placeholder:text-white/80"
+          placeholder="john@email.com"
         />
 
         <label className="text-lg">Mensagem</label>
@@ -77,7 +70,7 @@ export default function ContactPage() {
           name="message"
           cols="30"
           rows="5"
-          className="mt-2 mb-6 shadow-lg bg-[#FE7BE5]/30 border border-[#FE7BE5]  text-white text-sm rounded-lg block w-full p-2.5 placeholder:text-white/70"
+          className="mt-2 mb-6 shadow-lg bg-[#FE7BE5]/30 border border-[#FE7BE5]  text-white text-sm rounded-lg block w-full p-2.5 placeholder:text-white/80"
           placeholder="Gostei muito do seu trabalho..."
           value={formData.message}
           onChange={(e) =>

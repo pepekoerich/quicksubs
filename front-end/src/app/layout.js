@@ -1,4 +1,4 @@
-import Header from "./components/Header";
+import Header from "../components/Header";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -13,14 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      
       <body
         className={
           inter.className +
           " bg-gradient-to-b from-[#504099] to-[#974EC3] min-h-screen text-white"
         }
       >
-        <Toaster/>
+        <Toaster />
         <main className="p-4 mx-auto max-w-2xl font-mono">
           <Header />
           {children}

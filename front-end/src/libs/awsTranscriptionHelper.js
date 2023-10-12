@@ -29,7 +29,6 @@ export function formatTranscriptionItems(items) {
     srt += `${formatTime(start_time)} --> ${formatTime(end_time)}\n`;
     //content
     srt += `${item.content}\n\n`;
-
     i++;
   });
   return srt;

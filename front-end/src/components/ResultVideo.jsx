@@ -1,3 +1,5 @@
+"use client"
+
 import { useRef } from "react";
 import LogoIcon from "./LogoIcon";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
@@ -13,7 +15,7 @@ export default function ResultVideo({ filename, transcription }) {
   const [primaryColor, setPrimaryColor] = useState("#FE7BE5");
   const [outlineColor, setOutlineColor] = useState("#000000");
   const [progress, setProgress] = useState(1);
-  const ffmpegRef = useRef(new FFmpeg({ log: true }));
+  const ffmpegRef = useRef(new FFmpeg());
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -118,7 +120,7 @@ export default function ResultVideo({ filename, transcription }) {
             />
           </div>
         </div>
-        <div className="rounded overflow-hidden relative">
+        <div className="rounded overflow-hidden flex justify-center relative">
           {progress && progress < 1 && (
             <div className="bg-slate-800/80 rounded absolute inset-0 flex items-center justify-center">
               <div className="bg-[#504099]/90 text-lg text-white text-center rounded-full w-20 h-20 items-center flex justify-center">
@@ -126,7 +128,11 @@ export default function ResultVideo({ filename, transcription }) {
               </div>
             </div>
           )}
-          <video ref={videoRef} controls></video>
+          <video
+            ref={videoRef}
+            controls
+            className="max-h-[480px] rounded-lg"
+          ></video>
         </div>
       </section>
     </>

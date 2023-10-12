@@ -1,12 +1,12 @@
 "use client";
 
-import ResultVideo from "@/app/components/ResultVideo";
-import TranscriptionEditor from "@/app/components/TranscriptionEditor";
-import clearTranscriptionItems from "@/app/libs/awsTranscriptionHelper";
+import ResultVideo from "@/components/ResultVideo";
+import TranscriptionEditor from "@/components/TranscriptionEditor";
+import clearTranscriptionItems from "@/libs/awsTranscriptionHelper";
+
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-
 
 export default function FilePage({ params }) {
   const filename = params.filename;
@@ -37,19 +37,27 @@ export default function FilePage({ params }) {
   }
 
   if (isTranscribing) {
-    return <span className="text-center">Seu vídeo está sendo transcrito, aguarde...</span>;
+    return (
+      <span className="text-center">
+        Seu vídeo está sendo transcrito, aguarde...
+      </span>
+    );
   }
 
   if (isFetching) {
-    return <span className="text-center">Buscando transcrição, aguarde...</span>;
+    return (
+      <span className="text-center">Buscando transcrição, aguarde...</span>
+    );
   }
-
 
   return (
     <div>
       <div className="grid sm:grid-cols-2 md:gap-16 gap-8">
-        <TranscriptionEditor awsTranscription={awsTranscription} setAwsTranscription={setAwsTranscription}/>
-        <ResultVideo filename={filename} transcription={awsTranscription}/>
+        <TranscriptionEditor
+          awsTranscription={awsTranscription}
+          setAwsTranscription={setAwsTranscription}
+        />
+        <ResultVideo filename={filename} transcription={awsTranscription} />
       </div>
     </div>
   );

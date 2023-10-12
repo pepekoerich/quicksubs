@@ -20,7 +20,7 @@ export default function TranscriptionEditor({
           <div>Fim</div>
           <div>Conteúdo</div>
         </div>
-        <section className="max-h-64 sm:h-[603px] overflow-y-scroll ">
+        <section className="max-h-[565px] h-fit sm:h-[603px] overflow-y-scroll ">
           {awsTranscription.length > 0 &&
             awsTranscription.map((item, index) => (
               <TranscriptionItem

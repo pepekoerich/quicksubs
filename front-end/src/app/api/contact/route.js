@@ -1,4 +1,4 @@
-import { transporter, mailOptions } from "@/app/libs/nodemailer";
+import { transporter, mailOptions } from "@/libs/nodemailer";
 
 export async function POST(request) {
   const formData = await request.formData();
@@ -9,9 +9,9 @@ export async function POST(request) {
   try {
     await transporter.sendMail({
       ...mailOptions,
-      subject: `Contato pelo site de ${name}`,
+      subject: `Contato pelo QuickSubs - ${name}`,
       text: `Email enviado por ${email}`,
-      html: `<p>${message}</p>`,
+      html: `<p>Olá, me chamo ${name}. ${message}. Por favor, responda essa mensagem por este ${email}</p>`,
     });
     return Response.json({ message: "Mensagem enviada com sucesso!" });
   } catch (error) {

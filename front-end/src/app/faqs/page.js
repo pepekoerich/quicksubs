@@ -1,5 +1,5 @@
-import FaqsQA from "../components/FaqsQA";
-import Hero from "../components/Hero";
+import FaqsQA from "../../components/FaqsQA";
+import Hero from "../../components/Hero";
 
 export default function FaqsPage() {
   return (
