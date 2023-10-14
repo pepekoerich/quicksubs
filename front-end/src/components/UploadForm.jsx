@@ -1,69 +1,53 @@
 "use client";
 
-import axios from "axios";
 import UploadIcon from "./UploadIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "./Spinner";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function UploadForm() {
   const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
 
-  // async function uploadFile(event) {
-  //   event.preventDefault();
-  //   const files = event.target.files;
-  //   if (files.length > 0) {
-  //     try {
-  //       const file = files[0];
-  //       setIsUploading(true);
-  //       const res = await axios.postForm("/api/upload", { file });
-  //       console.log(res)
-  //       setIsUploading(false);
-  //       router.push(`/${res.data.newName}`);
-  //     } catch (error) {
-  //       console.log(error);
-  //       setIsUploading(false);
-  //       toast.error("Erro ao fazer upload do arquivo");
-  //     }
-  //   }
-  // }
-
   async function uploadFile(event) {
-    event.preventDefault();
-    const files = event.target.files;
-    if (files.length > 0) {
-      const file = files[0];
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      try {
-        setIsUploading(true);
-        const response = await axios.post("/api/upload", formData);
-        console.log(response);
-        setIsUploading(false);
-  
-        if (response.status === 200) {
-          const { newName } = response.data;
+    let file = event.target.files; // FileList object
+    try {
+      file = file[0];
+      setIsUploading(true);
+      const response = await axios.postForm("/api/upload", { file });
+      if (response.status === 200) {
+        const url = response.data.uploadUrl;
+        const type = response.data.fileType;
+        const newName = response.data.key;
+
+        const uploadVideo = await fetch(url, {
+          method: "PUT",
+          body: file,
+          key: newName,
+          headers: {
+            "Content-Type": type,
+          },
+        });
+
+        if (uploadVideo.status === 200) {
+          setIsUploading(false);
           router.push(`/${newName}`);
-        } else {
-          console.error("Unexpected response status:", response.status);
-          toast.error("Erro ao fazer upload do arquivo");
         }
-      } catch (error) {
-        console.error("Error during file upload:", error);
-        setIsUploading(false);
-        toast.error("Erro ao fazer upload do arquivo");
       }
+    } catch (error) {
+      console.log(error);
+      setIsUploading(false);
     }
+    setIsUploading(false);
   }
 
   return (
     <>
       {isUploading && (
         <div>
-          <Spinner/>
+          <Spinner />
         </div>
       )}
       <label className="border-2 shadow shadow-white hover:shadow-md hover:shadow-white ease-in-out rounded px-3 py-1 hover:bg-[#FE7BE5]/30 hover:scale-105 delay-0 duration-300 font-semibold inline-flex items-center gap-1 cursor-pointer">

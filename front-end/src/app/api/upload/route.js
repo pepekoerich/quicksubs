@@ -1,82 +1,30 @@
-// import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-
-// export const maxDuration = 50; // This function can run for a maximum of 5 seconds
-// export const dynamic = "force-dynamic";
-
-// export async function POST(req) {
-//   const formData = await req.formData();
-//   const file = formData.get("file");
-//   const { name, type } = file;
-//   const data = await file.arrayBuffer();
-
-//   const s3client = new S3Client({
-//     region: "us-east-1",
-//     credentials: {
-//       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//     },
-//   });
-
-//   const ext = name.split(".").slice(-1);
-//   const newName = `${Date.now()}.${ext}`;
-
-//   const uploadCommand = new PutObjectCommand({
-//     Bucket: process.env.AWS_BUCKET_NAME,
-//     ACL: "public-read",
-//     Key: newName,
-//     Body: data,
-//     ContentType: type,
-//   });
-
-//   await s3client.send(uploadCommand);
-
-//   return Response.json({ newName });
-// }
-
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export const maxDuration = 50; // This function can run for a maximum of 5 seconds
-export const dynamic = "force-dynamic";
+const s3 = new S3Client({
+  apiVersion: "2006-03-01",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: "us-east-1",
+  signatureVersion: "v4",
+});
 
-export async function POST(req) {
-  try {
-    const formData = await req.formData();
-    const file = formData.get("file");
-    const { name, type } = file;
-    const data = await file.arrayBuffer();
+export async function POST(request) {
+  const data = await request.formData();
+  const file = data.get("file");
+  const { name, type } = file;
 
-    const s3client = new S3Client({
-      region: "us-east-1",
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
+  const ext = name.split(".").pop();
+  const newName = `${Date.now()}.${ext}`;
 
-    const ext = name.split(".").slice(-1);
-    const newName = `${Date.now()}.${ext}`;
+  const s3Params = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: newName,
+    ContentType: type,
+    ACL: "public-read",
+  });
 
-    const uploadCommand = new PutObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      ACL: "public-read",
-      Key: newName,
-      Body: data,
-      ContentType: type,
-    });
+  const uploadUrl = await getSignedUrl(s3, s3Params, { expiresIn: 3600 });
 
-    await s3client.send(uploadCommand);
-
-    return new Response(JSON.stringify({ newName }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS, POST",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
-  } catch (error) {
-    console.error("Error uploading file to S3:", error);
-    return new Response("Error uploading file", { status: 500 });
-  }
+  return new Response(JSON.stringify({ uploadUrl, key: newName, type }));
 }
