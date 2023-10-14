@@ -4,7 +4,6 @@ import UploadIcon from "./UploadIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "./Spinner";
-import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function UploadForm() {
@@ -38,9 +37,7 @@ export default function UploadForm() {
       }
     } catch (error) {
       console.log(error);
-      setIsUploading(false);
     }
-    setIsUploading(false);
   }
 
   return (
